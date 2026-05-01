@@ -5,15 +5,24 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  ErrorResponse,
+  GetMuseumsParams,
+  HealthStatus,
+  Museum,
+  MuseumStats,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
 import type { ErrorType } from "../custom-fetch";
@@ -92,6 +101,347 @@ export function useHealthCheck<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getHealthCheckQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns a list of all NYC museums with their hours and info
+ * @summary List all NYC museums
+ */
+export const getGetMuseumsUrl = (params?: GetMuseumsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/museums?${stringifiedParams}`
+    : `/api/museums`;
+};
+
+export const getMuseums = async (
+  params?: GetMuseumsParams,
+  options?: RequestInit,
+): Promise<Museum[]> => {
+  return customFetch<Museum[]>(getGetMuseumsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMuseumsQueryKey = (params?: GetMuseumsParams) => {
+  return [`/api/museums`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetMuseumsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMuseums>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetMuseumsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMuseums>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMuseumsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMuseums>>> = ({
+    signal,
+  }) => getMuseums(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMuseums>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMuseumsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMuseums>>
+>;
+export type GetMuseumsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all NYC museums
+ */
+
+export function useGetMuseums<
+  TData = Awaited<ReturnType<typeof getMuseums>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetMuseumsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMuseums>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMuseumsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get museum by ID
+ */
+export const getGetMuseumByIdUrl = (id: string) => {
+  return `/api/museums/${id}`;
+};
+
+export const getMuseumById = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Museum> => {
+  return customFetch<Museum>(getGetMuseumByIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMuseumByIdQueryKey = (id: string) => {
+  return [`/api/museums/${id}`] as const;
+};
+
+export const getGetMuseumByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMuseumById>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMuseumById>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMuseumByIdQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMuseumById>>> = ({
+    signal,
+  }) => getMuseumById(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMuseumById>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMuseumByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMuseumById>>
+>;
+export type GetMuseumByIdQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get museum by ID
+ */
+
+export function useGetMuseumById<
+  TData = Awaited<ReturnType<typeof getMuseumById>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMuseumById>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMuseumByIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Refresh hours for a specific museum by scraping their website
+ */
+export const getRefreshMuseumHoursUrl = (id: string) => {
+  return `/api/museums/${id}/refresh`;
+};
+
+export const refreshMuseumHours = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Museum> => {
+  return customFetch<Museum>(getRefreshMuseumHoursUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getRefreshMuseumHoursMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshMuseumHours>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof refreshMuseumHours>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["refreshMuseumHours"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof refreshMuseumHours>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return refreshMuseumHours(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RefreshMuseumHoursMutationResult = NonNullable<
+  Awaited<ReturnType<typeof refreshMuseumHours>>
+>;
+
+export type RefreshMuseumHoursMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Refresh hours for a specific museum by scraping their website
+ */
+export const useRefreshMuseumHours = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshMuseumHours>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof refreshMuseumHours>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getRefreshMuseumHoursMutationOptions(options));
+};
+
+/**
+ * @summary Get summary stats about NYC museums
+ */
+export const getGetMuseumStatsUrl = () => {
+  return `/api/museums/stats/summary`;
+};
+
+export const getMuseumStats = async (
+  options?: RequestInit,
+): Promise<MuseumStats> => {
+  return customFetch<MuseumStats>(getGetMuseumStatsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMuseumStatsQueryKey = () => {
+  return [`/api/museums/stats/summary`] as const;
+};
+
+export const getGetMuseumStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMuseumStats>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMuseumStats>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMuseumStatsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMuseumStats>>> = ({
+    signal,
+  }) => getMuseumStats({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMuseumStats>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMuseumStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMuseumStats>>
+>;
+export type GetMuseumStatsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get summary stats about NYC museums
+ */
+
+export function useGetMuseumStats<
+  TData = Awaited<ReturnType<typeof getMuseumStats>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMuseumStats>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMuseumStatsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: museums
+    description: NYC Museums operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,101 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /museums:
+    get:
+      operationId: getMuseums
+      tags: [museums]
+      summary: List all NYC museums
+      description: Returns a list of all NYC museums with their hours and info
+      parameters:
+        - name: borough
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Manhattan, Brooklyn, Queens, Bronx, "Staten Island"]
+          description: Filter by borough
+        - name: openNow
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter to only currently open museums
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by museum name
+      responses:
+        "200":
+          description: List of museums
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Museum"
+  /museums/{id}:
+    get:
+      operationId: getMuseumById
+      tags: [museums]
+      summary: Get museum by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Museum details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Museum"
+        "404":
+          description: Museum not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /museums/{id}/refresh:
+    post:
+      operationId: refreshMuseumHours
+      tags: [museums]
+      summary: Refresh hours for a specific museum by scraping their website
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Updated museum
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Museum"
+        "404":
+          description: Museum not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /museums/stats/summary:
+    get:
+      operationId: getMuseumStats
+      tags: [museums]
+      summary: Get summary stats about NYC museums
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MuseumStats"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +130,113 @@ components:
           type: string
       required:
         - status
-
+    DayHours:
+      type: object
+      properties:
+        open:
+          type: string
+          description: Opening time (e.g. "10:00 AM")
+        close:
+          type: string
+          description: Closing time (e.g. "5:30 PM")
+        closed:
+          type: boolean
+          description: Whether the museum is closed this day
+      required:
+        - closed
+    WeeklyHours:
+      type: object
+      properties:
+        monday:
+          $ref: "#/components/schemas/DayHours"
+        tuesday:
+          $ref: "#/components/schemas/DayHours"
+        wednesday:
+          $ref: "#/components/schemas/DayHours"
+        thursday:
+          $ref: "#/components/schemas/DayHours"
+        friday:
+          $ref: "#/components/schemas/DayHours"
+        saturday:
+          $ref: "#/components/schemas/DayHours"
+        sunday:
+          $ref: "#/components/schemas/DayHours"
+    Museum:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        borough:
+          type: string
+        neighborhood:
+          type: string
+        website:
+          type: string
+        phone:
+          type: string
+        admission:
+          type: string
+          description: Admission pricing info
+        category:
+          type: string
+          description: Type of museum (art, science, history, etc.)
+        hours:
+          $ref: "#/components/schemas/WeeklyHours"
+        hoursNote:
+          type: string
+          description: Additional hours information or exceptions
+        isOpenNow:
+          type: boolean
+          description: Whether the museum is currently open
+        todayHours:
+          type: string
+          description: Human-readable today's hours
+        lastScraped:
+          type: string
+          format: date-time
+          description: When the hours were last fetched/scraped
+        imageUrl:
+          type: string
+      required:
+        - id
+        - name
+        - address
+        - borough
+        - website
+        - category
+    MuseumStats:
+      type: object
+      properties:
+        total:
+          type: integer
+        openNow:
+          type: integer
+        byBorough:
+          type: object
+          additionalProperties:
+            type: integer
+        byCategory:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+        - total
+        - openNow
+        - byBorough
+        - byCategory
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message

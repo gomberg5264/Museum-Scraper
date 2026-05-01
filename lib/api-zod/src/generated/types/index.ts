@@ -6,4 +6,13 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./dayHours";
+export * from "./errorResponse";
+export * from "./getMuseumsBorough";
+export * from "./getMuseumsParams";
 export * from "./healthStatus";
+export * from "./museum";
+export * from "./museumStats";
+export * from "./museumStatsByBorough";
+export * from "./museumStatsByCategory";
+export * from "./weeklyHours";

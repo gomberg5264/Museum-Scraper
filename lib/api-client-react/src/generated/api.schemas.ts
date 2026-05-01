@@ -8,3 +8,89 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface DayHours {
+  /** Opening time (e.g. "10:00 AM") */
+  open?: string;
+  /** Closing time (e.g. "5:30 PM") */
+  close?: string;
+  /** Whether the museum is closed this day */
+  closed: boolean;
+}
+
+export interface WeeklyHours {
+  monday?: DayHours;
+  tuesday?: DayHours;
+  wednesday?: DayHours;
+  thursday?: DayHours;
+  friday?: DayHours;
+  saturday?: DayHours;
+  sunday?: DayHours;
+}
+
+export interface Museum {
+  id: string;
+  name: string;
+  description?: string;
+  address: string;
+  borough: string;
+  neighborhood?: string;
+  website: string;
+  phone?: string;
+  /** Admission pricing info */
+  admission?: string;
+  /** Type of museum (art, science, history, etc.) */
+  category: string;
+  hours?: WeeklyHours;
+  /** Additional hours information or exceptions */
+  hoursNote?: string;
+  /** Whether the museum is currently open */
+  isOpenNow?: boolean;
+  /** Human-readable today's hours */
+  todayHours?: string;
+  /** When the hours were last fetched/scraped */
+  lastScraped?: string;
+  imageUrl?: string;
+}
+
+export type MuseumStatsByBorough = { [key: string]: number };
+
+export type MuseumStatsByCategory = { [key: string]: number };
+
+export interface MuseumStats {
+  total: number;
+  openNow: number;
+  byBorough: MuseumStatsByBorough;
+  byCategory: MuseumStatsByCategory;
+}
+
+export interface ErrorResponse {
+  error: string;
+  message: string;
+}
+
+export type GetMuseumsParams = {
+  /**
+   * Filter by borough
+   */
+  borough?: GetMuseumsBorough;
+  /**
+   * Filter to only currently open museums
+   */
+  openNow?: boolean;
+  /**
+   * Search by museum name
+   */
+  search?: string;
+};
+
+export type GetMuseumsBorough =
+  (typeof GetMuseumsBorough)[keyof typeof GetMuseumsBorough];
+
+export const GetMuseumsBorough = {
+  Manhattan: "Manhattan",
+  Brooklyn: "Brooklyn",
+  Queens: "Queens",
+  Bronx: "Bronx",
+  Staten_Island: "Staten Island",
+} as const;

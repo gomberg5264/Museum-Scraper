@@ -14,3 +14,458 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Returns a list of all NYC museums with their hours and info
+ * @summary List all NYC museums
+ */
+export const GetMuseumsQueryParams = zod.object({
+  borough: zod
+    .enum(["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"])
+    .optional()
+    .describe("Filter by borough"),
+  openNow: zod.coerce
+    .boolean()
+    .optional()
+    .describe("Filter to only currently open museums"),
+  search: zod.coerce.string().optional().describe("Search by museum name"),
+});
+
+export const GetMuseumsResponseItem = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  description: zod.string().optional(),
+  address: zod.string(),
+  borough: zod.string(),
+  neighborhood: zod.string().optional(),
+  website: zod.string(),
+  phone: zod.string().optional(),
+  admission: zod.string().optional().describe("Admission pricing info"),
+  category: zod
+    .string()
+    .describe("Type of museum (art, science, history, etc.)"),
+  hours: zod
+    .object({
+      monday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      tuesday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      wednesday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      thursday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      friday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      saturday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      sunday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+    })
+    .optional(),
+  hoursNote: zod
+    .string()
+    .optional()
+    .describe("Additional hours information or exceptions"),
+  isOpenNow: zod
+    .boolean()
+    .optional()
+    .describe("Whether the museum is currently open"),
+  todayHours: zod.string().optional().describe("Human-readable today's hours"),
+  lastScraped: zod.coerce
+    .date()
+    .optional()
+    .describe("When the hours were last fetched\/scraped"),
+  imageUrl: zod.string().optional(),
+});
+export const GetMuseumsResponse = zod.array(GetMuseumsResponseItem);
+
+/**
+ * @summary Get museum by ID
+ */
+export const GetMuseumByIdParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const GetMuseumByIdResponse = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  description: zod.string().optional(),
+  address: zod.string(),
+  borough: zod.string(),
+  neighborhood: zod.string().optional(),
+  website: zod.string(),
+  phone: zod.string().optional(),
+  admission: zod.string().optional().describe("Admission pricing info"),
+  category: zod
+    .string()
+    .describe("Type of museum (art, science, history, etc.)"),
+  hours: zod
+    .object({
+      monday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      tuesday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      wednesday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      thursday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      friday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      saturday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      sunday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+    })
+    .optional(),
+  hoursNote: zod
+    .string()
+    .optional()
+    .describe("Additional hours information or exceptions"),
+  isOpenNow: zod
+    .boolean()
+    .optional()
+    .describe("Whether the museum is currently open"),
+  todayHours: zod.string().optional().describe("Human-readable today's hours"),
+  lastScraped: zod.coerce
+    .date()
+    .optional()
+    .describe("When the hours were last fetched\/scraped"),
+  imageUrl: zod.string().optional(),
+});
+
+/**
+ * @summary Refresh hours for a specific museum by scraping their website
+ */
+export const RefreshMuseumHoursParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const RefreshMuseumHoursResponse = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  description: zod.string().optional(),
+  address: zod.string(),
+  borough: zod.string(),
+  neighborhood: zod.string().optional(),
+  website: zod.string(),
+  phone: zod.string().optional(),
+  admission: zod.string().optional().describe("Admission pricing info"),
+  category: zod
+    .string()
+    .describe("Type of museum (art, science, history, etc.)"),
+  hours: zod
+    .object({
+      monday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      tuesday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      wednesday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      thursday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      friday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      saturday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+      sunday: zod
+        .object({
+          open: zod
+            .string()
+            .optional()
+            .describe('Opening time (e.g. \"10:00 AM\")'),
+          close: zod
+            .string()
+            .optional()
+            .describe('Closing time (e.g. \"5:30 PM\")'),
+          closed: zod
+            .boolean()
+            .describe("Whether the museum is closed this day"),
+        })
+        .optional(),
+    })
+    .optional(),
+  hoursNote: zod
+    .string()
+    .optional()
+    .describe("Additional hours information or exceptions"),
+  isOpenNow: zod
+    .boolean()
+    .optional()
+    .describe("Whether the museum is currently open"),
+  todayHours: zod.string().optional().describe("Human-readable today's hours"),
+  lastScraped: zod.coerce
+    .date()
+    .optional()
+    .describe("When the hours were last fetched\/scraped"),
+  imageUrl: zod.string().optional(),
+});
+
+/**
+ * @summary Get summary stats about NYC museums
+ */
+export const GetMuseumStatsResponse = zod.object({
+  total: zod.number(),
+  openNow: zod.number(),
+  byBorough: zod.record(zod.string(), zod.number()),
+  byCategory: zod.record(zod.string(), zod.number()),
+});

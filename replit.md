@@ -25,3 +25,33 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## NYC Museums App
+
+### What it does
+A full-stack NYC museums directory listing 26+ major museums across all 5 boroughs. Displays real-time open/closed status, today's hours, and full weekly schedules.
+
+### Architecture
+- **Frontend**: `artifacts/nyc-museums` — React + Vite + Tailwind app at `/`
+- **Backend**: `artifacts/api-server` — Express 5 API at `/api`
+
+### Key files
+- `artifacts/api-server/src/data/museums.ts` — Curated list of 26 NYC museums with hours
+- `artifacts/api-server/src/services/museumUtils.ts` — Open/closed detection utilities
+- `artifacts/api-server/src/services/museumScraper.ts` — Web scraping with cheerio
+- `artifacts/api-server/src/routes/museums.ts` — Museum API routes
+
+### API Endpoints
+- `GET /api/museums` — List museums (filters: borough, openNow, search)
+- `GET /api/museums/:id` — Get single museum
+- `GET /api/museums/stats/summary` — Aggregate stats
+- `POST /api/museums/:id/refresh` — Scrape fresh hours from museum website
+
+### Features
+- Live open/closed detection based on current time
+- Borough filter (Manhattan, Brooklyn, Queens, Bronx, Staten Island)
+- Category filter (art, science, history, natural history, specialty, children)
+- "Open Right Now" toggle
+- Full text search
+- Per-museum detail page with 7-day hours table and "Refresh Hours" button
+- Web scraping with cheerio to pull fresh hours from official museum websites
