@@ -28,6 +28,36 @@ export interface WeeklyHours {
   sunday?: DayHours;
 }
 
+export interface TransitLine {
+  /** Subway line letter/number (e.g. "4", "A", "N") */
+  line: string;
+  /** Hex color for the line badge */
+  color: string;
+}
+
+export interface TransitStation {
+  /** Station name */
+  name: string;
+  lines: TransitLine[];
+  /** Approximate walk time in minutes from museum */
+  walkMinutes: number;
+  /** Optional note about this station */
+  note?: string;
+}
+
+export interface TransitInfo {
+  stations: TransitStation[];
+  /** Nearby bus routes */
+  busRoutes?: string[];
+  /** Parking or driving note */
+  parkingNote?: string;
+}
+
+export type MuseumCoordinates = {
+  lat: number;
+  lng: number;
+};
+
 export interface Museum {
   id: string;
   name: string;
@@ -51,6 +81,8 @@ export interface Museum {
   /** When the hours were last fetched/scraped */
   lastScraped?: string;
   imageUrl?: string;
+  transit?: TransitInfo;
+  coordinates?: MuseumCoordinates;
 }
 
 export type MuseumStatsByBorough = { [key: string]: number };

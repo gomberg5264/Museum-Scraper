@@ -5,6 +5,8 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { MuseumCoordinates } from "./museumCoordinates";
+import type { TransitInfo } from "./transitInfo";
 import type { WeeklyHours } from "./weeklyHours";
 
 export interface Museum {
@@ -30,4 +32,6 @@ export interface Museum {
   /** When the hours were last fetched/scraped */
   lastScraped?: Date;
   imageUrl?: string;
+  transit?: TransitInfo;
+  coordinates?: MuseumCoordinates;
 }

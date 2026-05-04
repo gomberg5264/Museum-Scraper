@@ -167,6 +167,43 @@ export const GetMuseumsResponseItem = zod.object({
     .optional()
     .describe("When the hours were last fetched\/scraped"),
   imageUrl: zod.string().optional(),
+  transit: zod
+    .object({
+      stations: zod.array(
+        zod.object({
+          name: zod.string().describe("Station name"),
+          lines: zod.array(
+            zod.object({
+              line: zod
+                .string()
+                .describe(
+                  'Subway line letter\/number (e.g. \"4\", \"A\", \"N\")',
+                ),
+              color: zod.string().describe("Hex color for the line badge"),
+            }),
+          ),
+          walkMinutes: zod
+            .number()
+            .describe("Approximate walk time in minutes from museum"),
+          note: zod
+            .string()
+            .optional()
+            .describe("Optional note about this station"),
+        }),
+      ),
+      busRoutes: zod
+        .array(zod.string())
+        .optional()
+        .describe("Nearby bus routes"),
+      parkingNote: zod.string().optional().describe("Parking or driving note"),
+    })
+    .optional(),
+  coordinates: zod
+    .object({
+      lat: zod.number(),
+      lng: zod.number(),
+    })
+    .optional(),
 });
 export const GetMuseumsResponse = zod.array(GetMuseumsResponseItem);
 
@@ -313,6 +350,43 @@ export const GetMuseumByIdResponse = zod.object({
     .optional()
     .describe("When the hours were last fetched\/scraped"),
   imageUrl: zod.string().optional(),
+  transit: zod
+    .object({
+      stations: zod.array(
+        zod.object({
+          name: zod.string().describe("Station name"),
+          lines: zod.array(
+            zod.object({
+              line: zod
+                .string()
+                .describe(
+                  'Subway line letter\/number (e.g. \"4\", \"A\", \"N\")',
+                ),
+              color: zod.string().describe("Hex color for the line badge"),
+            }),
+          ),
+          walkMinutes: zod
+            .number()
+            .describe("Approximate walk time in minutes from museum"),
+          note: zod
+            .string()
+            .optional()
+            .describe("Optional note about this station"),
+        }),
+      ),
+      busRoutes: zod
+        .array(zod.string())
+        .optional()
+        .describe("Nearby bus routes"),
+      parkingNote: zod.string().optional().describe("Parking or driving note"),
+    })
+    .optional(),
+  coordinates: zod
+    .object({
+      lat: zod.number(),
+      lng: zod.number(),
+    })
+    .optional(),
 });
 
 /**
@@ -458,6 +532,43 @@ export const RefreshMuseumHoursResponse = zod.object({
     .optional()
     .describe("When the hours were last fetched\/scraped"),
   imageUrl: zod.string().optional(),
+  transit: zod
+    .object({
+      stations: zod.array(
+        zod.object({
+          name: zod.string().describe("Station name"),
+          lines: zod.array(
+            zod.object({
+              line: zod
+                .string()
+                .describe(
+                  'Subway line letter\/number (e.g. \"4\", \"A\", \"N\")',
+                ),
+              color: zod.string().describe("Hex color for the line badge"),
+            }),
+          ),
+          walkMinutes: zod
+            .number()
+            .describe("Approximate walk time in minutes from museum"),
+          note: zod
+            .string()
+            .optional()
+            .describe("Optional note about this station"),
+        }),
+      ),
+      busRoutes: zod
+        .array(zod.string())
+        .optional()
+        .describe("Nearby bus routes"),
+      parkingNote: zod.string().optional().describe("Parking or driving note"),
+    })
+    .optional(),
+  coordinates: zod
+    .object({
+      lat: zod.number(),
+      lng: zod.number(),
+    })
+    .optional(),
 });
 
 /**

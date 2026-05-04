@@ -2,6 +2,7 @@ import { Router } from "express";
 import { MUSEUMS, Museum, WeeklyHours } from "../data/museums.js";
 import { enrichMuseum } from "../services/museumUtils.js";
 import { scrapeMuseumHours } from "../services/museumScraper.js";
+import { TRANSIT_DATA, COORDINATES } from "../data/transit.js";
 
 const router = Router();
 
@@ -9,10 +10,12 @@ const hoursCache = new Map<string, { hours: WeeklyHours; cachedAt: Date }>();
 
 function getMuseumWithCachedHours(museum: Museum): Museum {
   const cached = hoursCache.get(museum.id);
-  if (cached) {
-    return enrichMuseum(museum, cached.hours);
-  }
-  return enrichMuseum(museum);
+  const enriched = cached ? enrichMuseum(museum, cached.hours) : enrichMuseum(museum);
+  return {
+    ...enriched,
+    transit: TRANSIT_DATA[museum.id],
+    coordinates: COORDINATES[museum.id],
+  };
 }
 
 router.get("/museums", (req, res) => {

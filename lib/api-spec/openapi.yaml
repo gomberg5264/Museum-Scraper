@@ -161,6 +161,55 @@ components:
           $ref: "#/components/schemas/DayHours"
         sunday:
           $ref: "#/components/schemas/DayHours"
+    TransitLine:
+      type: object
+      properties:
+        line:
+          type: string
+          description: Subway line letter/number (e.g. "4", "A", "N")
+        color:
+          type: string
+          description: Hex color for the line badge
+      required:
+        - line
+        - color
+    TransitStation:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Station name
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransitLine"
+        walkMinutes:
+          type: integer
+          description: Approximate walk time in minutes from museum
+        note:
+          type: string
+          description: Optional note about this station
+      required:
+        - name
+        - lines
+        - walkMinutes
+    TransitInfo:
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransitStation"
+        busRoutes:
+          type: array
+          items:
+            type: string
+          description: Nearby bus routes
+        parkingNote:
+          type: string
+          description: Parking or driving note
+      required:
+        - stations
     Museum:
       type: object
       properties:
@@ -203,6 +252,18 @@ components:
           description: When the hours were last fetched/scraped
         imageUrl:
           type: string
+        transit:
+          $ref: "#/components/schemas/TransitInfo"
+        coordinates:
+          type: object
+          properties:
+            lat:
+              type: number
+            lng:
+              type: number
+          required:
+            - lat
+            - lng
       required:
         - id
         - name
