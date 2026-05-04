@@ -2,6 +2,33 @@ import { Museum, WeeklyHours } from "../data/museums.js";
 
 type DayName = keyof WeeklyHours;
 
+const NY_TZ = "America/New_York";
+
+function getNYDateParts(): { dayIndex: number; hours: number; minutes: number } {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: NY_TZ,
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(now);
+
+  const weekdayStr = parts.find((p) => p.type === "weekday")?.value ?? "Sun";
+  const hourStr = parts.find((p) => p.type === "hour")?.value ?? "0";
+  const minuteStr = parts.find((p) => p.type === "minute")?.value ?? "0";
+
+  const WEEKDAYS: Record<string, number> = {
+    Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6,
+  };
+
+  return {
+    dayIndex: WEEKDAYS[weekdayStr] ?? 0,
+    hours: parseInt(hourStr, 10),
+    minutes: parseInt(minuteStr, 10),
+  };
+}
+
 const DAY_NAMES: DayName[] = [
   "sunday",
   "monday",
@@ -13,13 +40,12 @@ const DAY_NAMES: DayName[] = [
 ];
 
 export function getTodayDayName(): DayName {
-  const idx = new Date().getDay();
-  return DAY_NAMES[idx];
+  return DAY_NAMES[getNYDateParts().dayIndex];
 }
 
 export function getCurrentTimeMinutes(): number {
-  const now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
+  const { hours, minutes } = getNYDateParts();
+  return hours * 60 + minutes;
 }
 
 function parseTimeToMinutes(timeStr: string): number {
