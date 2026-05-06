@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
     "start": "node start.mjs",
     "build": "npx --yes pnpm@latest install --no-frozen-lockfile && npx pnpm --filter @workspace/api-server run build && npx pnpm --filter @workspace/nyc-museums run build",
     "typecheck:libs": "tsc --build",

@@ -1,0 +1,55 @@
+[11:35:44.974] Debug logging is disabled. Enable it above if necessary!
+[11:35:45.000] Cloning gomberg5264/museum-scraper:main...
+[11:35:46.264] Configuration changed
+[11:35:46.798] Building production image...
+[11:35:51.197] #2 [internal] load .dockerignore
+[11:35:51.218] #2 sha256:b91df3c913920a93cadbe99dec59b8e507e7c5e2d642d6e21b3c7e72554cad51
+[11:35:51.248] #2 DONE 0.0s
+[11:35:51.252] #1 [internal] load build definition from Dockerfile
+[11:35:51.256] #1 sha256:197dd1b07c0f5b668b49f2c79b24aef43a24b23b56b78f70aadb861bf3ae3e1a
+[11:35:51.260] #1 transferring dockerfile: 181B done
+[11:35:51.264] #1 DONE 0.0s
+[11:35:51.267] #2 [internal] load .dockerignore
+[11:35:51.270] #2 sha256:b91df3c913920a93cadbe99dec59b8e507e7c5e2d642d6e21b3c7e72554cad51
+[11:35:51.274] #2 transferring context: 2B done
+[11:35:51.278] #2 DONE 0.0s
+[11:35:51.282] #3 [internal] load metadata for docker.io/library/node:lts
+[11:35:51.286] #3 sha256:d292083fecdf88c05c7f542ce51888d7f5e3ec5d9e01de0c2be3b86532af0204
+[11:35:51.290] #3 DONE 0.3s
+[11:35:51.294] #4 [1/5] FROM docker.io/library/node:lts@sha256:e9891237dfbb1de60ce19e9ff9fac5d73ad9c37da303ad72ff2a425ad1057e71
+[11:35:51.305] #4 sha256:f2aa1910e696d64fcc2fd3b7c0b076844abd347c9f5df7195417d46874c8572a
+[11:35:51.310] #4 DONE 0.0s
+[11:35:51.313] #5 [2/5] WORKDIR /app
+[11:35:51.316] #5 sha256:b84e9838d389b5fdf80131733179fd5c16eb70b2b0e7763459b950a261baef9c
+[11:35:51.318] #5 CACHED
+[11:35:51.322] #6 [internal] load build context
+[11:35:51.325] #6 sha256:d6f4bdf71978dba859504f7712b7a3699fc06340b7152a65ebc94f66f8a46e6b
+[11:35:51.329] #6 transferring context: 1.13MB 0.1s done
+[11:35:51.332] #6 DONE 0.1s
+[11:35:51.336] #7 [3/5] COPY . ./
+[11:35:51.339] #7 sha256:43c3a517d7325c9a99ccac1180f87a0bdb209c1c39da2a5227cf2a874409202c
+[11:35:51.342] #7 DONE 0.1s
+[11:35:51.358] #8 [4/5] RUN npm install
+[11:35:51.363] #8 sha256:d173cf26e668aea7d32b44109c47d3e70d1688cdf280f8a2f16dbf7c1c3d2537
+[11:35:51.366] #8 1.938 npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[11:35:51.370] #8 1.938 npm warn Unknown project config "strict-peer-dependencies". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[11:35:51.373] #8 3.591
+[11:35:51.376] #8 3.591 > workspace@0.0.0 preinstall
+[11:35:51.379] #8 3.591 > sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+[11:35:51.382] #8 3.591
+[11:35:51.385] #8 3.609 Use pnpm instead
+[11:35:51.389] #8 3.617 npm error code 1
+[11:35:51.392] #8 3.617 npm error path /app
+[11:35:51.395] #8 3.617 npm error command failed
+[11:35:51.399] #8 3.618 npm error command sh -c sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+[11:35:51.402] #8 3.620 npm notice
+[11:35:51.405] #8 3.620 npm notice New minor version of npm available! 11.12.1 -> 11.13.0
+[11:35:51.408] #8 3.620 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.13.0
+[11:35:51.410] #8 3.620 npm notice To update run: npm install -g npm@11.13.0
+[11:35:51.413] #8 3.620 npm notice
+[11:35:51.415] #8 3.620 npm error A complete log of this run can be found in: /root/.npm/_logs/2026-05-06T15_35_48_329Z-debug-0.log
+[11:35:51.419] #8 ERROR: process "/bin/sh -c npm install" did not complete successfully: exit code: 1
+[11:35:51.423] ------
+[11:35:51.428] > [4/5] RUN npm install:
+[11:35:51.432] ------
+[11:35:51.438] process "/bin/sh -c npm install" did not complete successfully: exit code: 1
